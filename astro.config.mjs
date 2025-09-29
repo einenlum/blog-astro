@@ -1,13 +1,13 @@
-import { defineConfig } from 'astro/config';
+import { defineConfig } from "astro/config";
 
 // https://astro.build/config
-import tailwind from '@astrojs/tailwind';
+import tailwind from "@astrojs/tailwind";
 
 // https://astro.build/config
-import mdx from '@astrojs/mdx';
+import mdx from "@astrojs/mdx";
 
 // https://astro.build/config
-import sitemap from '@astrojs/sitemap';
+import sitemap from "@astrojs/sitemap";
 
 // https://astro.build/config
 export default defineConfig({
@@ -20,12 +20,10 @@ export default defineConfig({
   ],
   markdown: {
     shikiConfig: {
-      theme: 'nord',
+      theme: "nord",
       wrap: true,
     },
   },
-  site: 'https://www.einenlum.com/',
-  // GitHub Pages deployment configuration
-  base: '/blog-astro',
-  output: 'static',
+  site: "https://www.einenlum.com/",
+  output: "static",
 });
