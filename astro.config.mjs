@@ -26,5 +26,6 @@ export default defineConfig({
   },
   site: 'https://www.einenlum.com/',
   // GitHub Pages deployment configuration
+  base: '/blog-astro',
   output: 'static',
 });
