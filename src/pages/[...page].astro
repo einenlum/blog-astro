@@ -31,6 +31,18 @@ const { page } = Astro.props;
 ---
 
 <Layout title="Einenlum - Coding amongst alpacas and pinball machines" description="Notes and lessons learned in software development - PHP, Python, tooling, and more. Creator of a Python course for PHP developers.">
+	<script type="application/ld+json" set:html={JSON.stringify({
+		"@context": "https://schema.org",
+		"@type": "WebSite",
+		"name": "Einenlum",
+		"description": "Notes and lessons learned in software development - PHP, Python, tooling, and more. Creator of a Python course for PHP developers.",
+		"url": "https://www.einenlum.com",
+		"author": {
+			"@type": "Person",
+			"name": "Einenlum",
+			"url": "https://www.einenlum.com/about"
+		}
+	})} />
 	<ArticlesContainer articles={page.data} />
 
     <PaginationBar prevUrl={page.url.prev} nextUrl={page.url.next} currentPage={page.currentPage} totalPages={page.lastPage} />
