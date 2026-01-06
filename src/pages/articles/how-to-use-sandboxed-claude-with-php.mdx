@@ -1,0 +1,225 @@
+import ArticleLayout from '../../layouts/article-layout.astro';
+import { components as MarkdownComponents } from '../../components/markdown-components.astro';
+export const components = MarkdownComponents;
+
+export const publishedAt = new Date(2026, 0, 6);
+export const description = 'How I set up my Manjaro Linux to use Claude with PHP and Laravel boost through docker sandbox';
+export const title = 'How to use sandboxed Claude with PHP';
+
+<ArticleLayout title={title} description={description} publishedAt={publishedAt}>
+
+I use Claude Code more and more for various tasks and I always manually accept any edit or command because I think it would be insane to let an AI run code on my machine without supervision.
+
+Recently someone on Reddit mentioned [how they lost their full home directory](https://www.reddit.com/r/ClaudeAI/comments/1pgxckk/claude_cli_deleted_my_entire_home_directory_wiped/) because Claude Code decided to add `~/` to an `rm -rf` command.
+
+Whether it's clickbait or not, I still think it's a very bad idea to give Claude direct access to your file system.
+
+It's unfortunate because I would love to be able to let Claude run in the background for a complex task without me pressing the `Enter` key every minute. I saw yesterday this very interesting [tweet](https://x.com/mattpocockuk/status/2008200878633931247) from Matt Pocock about his setup to let Claude running commands in an autonomous way. I would love to try it, but I would never do it without a sandbox.
+
+## Docker sandbox
+
+Fortunately, I realized yesterday that [Docker](https://www.docker.com/) now provides a few commands to easily sandbox AI agents.
+
+Here is the [claude sandbox documentation](https://docs.docker.com/ai/sandboxes/claude-code/).
+
+The image runs Claude Code with access to your current directory only, and with the `--dangerously-skip-permissions` flag. It automatically copies your Git config into the container so that Claude can commit changes if needed. It also runs as a non-root user inside the container for better security.
+
+Are there some development tools installed there? Yes, there are:
+
+> The `docker/sandbox-templates:claude-code` image includes Claude Code with automatic credential management, plus development tools (Docker CLI, GitHub CLI, Node.js, Go, Python 3, Git, ripgrep, jq).
+
+This is great for many people, but I wanted to use it with PHP and Laravel. Laravel now provides [Laravel Boost](https://laravel.com/ai/boost) which installs an MCP server allowing Claude to check your codebase, your db schema and run migrations.
+
+It took me a while to figure out how to make this work with my Laravel app using Postgres, on Manjaro Linux.
+
+## Docker desktop
+
+`docker sandbox` is a command provided by Docker Desktop. I never needed Docker Desktop (I only used the Docker daemon) until now, so I first had to install it on Manjaro.
+
+I first needed to remove `docker-buildx` and `docker-compose`:
+
+```bash
+sudo pacman -R docker-buildx docker-compose
+```
+
+Then I downloaded the latest release of Docker Desktop for Arch from [here](https://docs.docker.com/desktop/release-notes) (4.55.0 in my case).
+
+I then installed the package with `pacman`:
+
+```bash
+sudo pacman -U ./docker-desktop-x86_64.pkg.tar.zst
+```
+
+I then disabled the "classical" Docker service and enabled the Docker Desktop one:
+
+```bash
+sudo systemctl disable --now docker
+systemctl --user enable --now docker-desktop
+```
+
+```bash
+docker context ls
+```
+
+This should confirm that Docker Desktop is running instead of the classical Docker daemon (see the asterisk `*`):
+
+```bash
+NAME              DESCRIPTION                               DOCKER ENDPOINT                                     ERROR
+default           Current DOCKER_HOST based configuration   unix:///var/run/docker.sock                         
+desktop-linux *   Docker Desktop                            unix:///home/einenlum/.docker/desktop/docker.sock  
+```
+
+A window should appear asking you to accept the terms of service.
+
+## Running the default claude sandbox
+
+You can now try to run the default claude sandbox in your project directory:
+
+```bash
+docker sandbox run claude
+```
+
+It should open claude asking you a few questions to get started (and allowing you to log in).
+
+It worked for me, but as soon as I tried to make a change, it failed to use the MCP server because PHP was not installed.
+
+## Creating a custom claude sandbox with PHP
+
+To create a custom claude sandbox with PHP, I had to create a `Dockerfile` based on the default sandbox image.
+
+I wanted it to be available in all may projects so I put it `~/.docker/sandbox-templates/claude-php-8.4/Dockerfile`. I used `php-8.4` as the directory name because I will want to use different versions of PHP later.
+
+```Dockerfile
+FROM docker/sandbox-templates:claude-code
+
+# we switch to root to install packages
+USER root
+
+# The base image is based on Ubuntu, so we use apt
+# to install PHP 8.4 and common extensions
+RUN apt-get update && apt-get install -y \
+    php8.4 \
+    php8.4-cli \
+    php8.4-common \
+    php8.4-curl \
+    php8.4-mbstring \
+    php8.4-mysql \
+    php8.4-pgsql \
+    php8.4-sqlite3 \
+    php8.4-xml \
+    php8.4-zip \
+    composer \
+    && rm -rf /var/lib/apt/lists/*
+
+# we switch back to the agent user
+# This is the default user in the docker/sandbox-templates images
+USER agent
+```
+
+You can then build the image with:
+
+```bash
+docker build -t claude-php-8.4 .
+```
+
+Now you can delete the existing sandbox (if any):
+
+```bash
+$ docker sandbox ls
+SANDBOX ID     ...
+f04f3f995ed7   ...
+
+$ docker sandbox rm f04f3f995ed7
+```
+
+And we can pass a `template` option to use our custom image when running the sandbox.
+
+We go to the root of our Laravel project and run:
+
+```bash
+docker sandbox run -t claude-php-8.4 claude
+```
+
+We need to answer the initial questions again, and login, but now Claude has access to PHP and composer.
+
+## Make it access the Postgres db
+
+To make it access the Postgres database, I had to make a few changes.
+
+First, in my `.env` file, I hade to change the `DB_HOST` from `localhost` to `host.docker.internal` so that the container can access the database running on my host machine.
+
+To make sure I don't have to switch all the time my `.env` file when working inside or outside the sandbox, I added this to my `/etc/hosts` file:
+
+```
+127.0.0.1	host.docker.internal
+```
+
+This way both my host machine and the container can resolve `host.docker.internal` to my local machine.
+
+Finally, I had to edit two Postgres configuration files to allow connections from the Docker container.
+
+In `/var/lib/postgres/data/postgresql.conf` I had to uncomment `listen_addresses` and set it to `'*'`:
+
+```
+listen_addresses = '*'	
+```
+
+Maybe not great, but my local Postgres is not accessible from the internet anyway, and it only contains gibberish test data.
+
+Then in `/var/lib/postgres/data/pg_hba.conf` I added this line at the end of the file:
+
+```
+# Allow Docker containers
+host    all    all    192.168.65.0/24    md5
+```
+
+Now I could restart Postgres:
+
+```bash
+sudo systemctl restart postgresql
+```
+
+And finally, I could start the sandbox again:
+
+```bash
+docker sandbox run -t claude-php-8.4 claude
+```
+
+```bash
+docker sandbox run -D -t claude-php-8.4 claude
+
+
+               Claude Code v2.0.76
+ * ▐▛███▜▌ *   Opus 4.5 · Claude Max
+* ▝▜█████▛▘ *  /home/einenlum/Prog/php/fzlaravel
+ *  ▘▘ ▝▝  *   
+
+> check the state of the db 
+
+laravel-boost - database-query (MCP)(query: "SELECT \n  (SELECT COUNT(*) FROM users) as users_count,\n  (SELECT COUNT(*) FROM locations) as locations_count,\n  (SELECT COUNT(*) FROM
+                                      reviews) as reviews_count,\n  (SELECT COUNT(*) FROM friend_requests) as friend_requests_count,\n  (SELECT COUNT(*) FROM friendships) as
+                                      friendships_count,\n  (SELECT COUNT(*) FROM notifications) as notifications_count")
+  ⎿  [                                                                                                                                                                                
+         {
+             "users_count": 9,
+     … +7 lines (ctrl+o to expand)
+
+● Here's the current state of the database:
+
+  Database Engine
+
+  PostgreSQL with PostGIS extension (for geospatial data)
+
+  Tables (19 total)
+
+  Domain Tables
+
+  | Table           | Records | Description                                                      |
+  |-----------------|---------|------------------------------------------------------------------|
+  | users           | 9       | User accounts with auth, colors, avatar, locked_location         |
+  ...
+```
+
+I hope this can help someone!
+
+</ArticleLayout>
