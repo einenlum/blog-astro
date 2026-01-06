@@ -15,7 +15,27 @@ const { title, description, publishedAt, existingHackerNewsUrl, previewImage } =
 const hackerNewsUrl = existingHackerNewsUrl || `https://news.ycombinator.com/submitlink?u=${encodeURIComponent(Astro.url)}&t=${encodeURIComponent(title)}`;
 ---
 
-<Layout title={title} description={description} previewImage={previewImage}>
+<Layout title={title} description={description} previewImage={previewImage} isArticle={true} publishedAt={publishedAt}>
+    <script type="application/ld+json" set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": title,
+        "description": description,
+        "datePublished": publishedAt.toISOString(),
+        "author": {
+            "@type": "Person",
+            "name": "Einenlum",
+            "url": "https://www.einenlum.com/about"
+        },
+        "publisher": {
+            "@type": "Person",
+            "name": "Einenlum"
+        },
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": Astro.url.href
+        }
+    })} />
     <!-- Pagefind will only look for articles now -->
     <div data-pagefind-body>
         <ArticleHeader title={title} publishedAt={publishedAt} />

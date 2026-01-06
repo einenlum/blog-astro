@@ -1,3 +1,4 @@
 User-agent: *
-Disallow: /favicon.svg
-Disallow: /images/*
+Allow: /
+
+Sitemap: https://www.einenlum.com/sitemap-index.xml

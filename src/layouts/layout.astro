@@ -9,9 +9,11 @@ export interface Props {
 	description: string,
 	includeSearch?: boolean,
     previewImage?: string,
+    isArticle?: boolean,
+    publishedAt?: Date,
 }
 
-const { title, description, includeSearch, previewImage } = Astro.props as Props;
+const { title, description, includeSearch, previewImage, isArticle, publishedAt } = Astro.props as Props;
 ---
 
 <!DOCTYPE html>
@@ -24,13 +26,21 @@ const { title, description, includeSearch, previewImage } = Astro.props as Props
 		)}
 		<meta name="description" content={description} />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="author" content="Einenlum" />
+		<link rel="canonical" href={Astro.url} />
         <meta property="og:title" content={title}>
         <meta property="og:description" content={description}>
         <meta property="og:url" content={Astro.url}>
         <meta property="og:image" content={previewImage || "https://www.einenlum.com/favicon.png"}>
-		<meta property="og:type" content="website" />
+		<meta property="og:type" content={isArticle ? "article" : "website"} />
+		{isArticle && publishedAt && (
+			<meta property="article:published_time" content={publishedAt.toISOString()} />
+		)}
+		{isArticle && (
+			<meta property="article:author" content="Einenlum" />
+		)}
 
-		<meta name="twitter:card" content="summary">
+		<meta name="twitter:card" content="summary_large_image">
 		<meta name="twitter:site" content="einenlum.com">
 		<meta name="twitter:title" content={title}>
 		<meta name="twitter:description" content={description}>
