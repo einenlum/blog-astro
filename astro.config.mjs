@@ -25,4 +25,5 @@ export default defineConfig({
     },
   },
   site: 'https://www.einenlum.com/',
+  trailingSlash: 'always',
 });

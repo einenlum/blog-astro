@@ -27,10 +27,10 @@ const { title, description, includeSearch, previewImage, isArticle, publishedAt 
 		<meta name="description" content={description} />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="author" content="Einenlum" />
-		<link rel="canonical" href={Astro.url} />
+		<link rel="canonical" href={Astro.url.href} />
         <meta property="og:title" content={title}>
         <meta property="og:description" content={description}>
-        <meta property="og:url" content={Astro.url}>
+        <meta property="og:url" content={Astro.url.href}>
         <meta property="og:image" content={previewImage || "https://www.einenlum.com/favicon.png"}>
 		<meta property="og:type" content={isArticle ? "article" : "website"} />
 		{isArticle && publishedAt && (
