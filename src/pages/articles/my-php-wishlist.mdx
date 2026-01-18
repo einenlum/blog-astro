@@ -3,19 +3,25 @@ import { components as MarkdownComponents } from '../../components/markdown-comp
 import InsertBox from '../../components/insert-box.astro';
 export const components = MarkdownComponents;
 
-export const publishedAt = new Date(2026, 0, 7);
-export const title = 'My wishlist for PHP';
+export const publishedAt = new Date(2026, 0, 18);
+export const title = 'My PHP Wishlist';
 export const description = 'My personal take on what would make me like PHP even more.';
 
 <ArticleLayout title={title} description={description} publishedAt={publishedAt}>
 
-I recently stumbled upon this [article from Brent Roose on stitcher](https://stitcher.io/blog/my-wishlist-for-php-in-2026) where he shares his wishlist for PHP in 2026.
+I recently stumbled upon this [article from Brent Roose on Stitcher](https://stitcher.io/blog/my-wishlist-for-php-in-2026) where he shares his wishlist for PHP in 2026.
 
-I think it's quite a nice idea and I realized I have my own wishlist for PHP as well. Some of the items are heavily inspired by what I love about Python.
+It's a nice idea and it made me realize I have my own wishlist for PHP as well. Some of the items are heavily inspired by what I love about Python.
 
 <InsertBox>
 
-You are a PHP dev and you are curious about Python? 🐍
+Are you a PHP dev curious about Python? 🐍
+
+<div class="text-center rounded">
+    <a href="https://fromphptopython.com">
+        <img class="mx-auto rounded-lg max-w-lg" src="https://fromphptopython-images.fra1.cdn.digitaloceanspaces.com/meta/og_image.png" alt="From PHP to Python course" />
+    </a>
+</div>
 
 You should definitely check my course [From PHP to Python](https://fromphptopython.com).
 
@@ -23,31 +29,27 @@ You can quickly learn this amazing language and open yourself to a whole new wor
 
 </InsertBox>
 
-## Disclaimer
-
-I first want to be clear: **these takes are highly subjective and personal.**
-
 ## Package management
 
-It feels quite weird to me that [Composer](https://getcomposer.org/) is now required for almost any PHP project (and has become the standard way to manage dependencies), but it's not included in the language itself.
+It feels strange to me that [Composer](https://getcomposer.org/) is now required for almost any PHP project (and has become the standard way to manage dependencies), but it's not included in the language itself.
 
-I think it's definitely mature and stable enough to be bundled with PHP. It seems like any major change to Composer would break almost every PHP project out there, so having it maintained by the PHP core team and included in the language distribution would make a lot of sense.
+It's definitely mature and stable enough to be bundled with PHP. It seems like any major change to Composer would break almost every PHP project out there, so having it maintained by the PHP core team and included in the language distribution would make a lot of sense.
 
 Telling a newcomer they need to install Composer separately doesn't feel right.
 
 ## Packagist
 
-[Packagist](https://packagist.org/) is (to my knowledge) run by a private company (which does a great job, btw!) and not part of a committee or the PHP core team. The [recent crazy drama in the Ruby community](https://joel.drapper.me/p/rubygems-takeover/) made me think that we should all be careful about who controls the main package repository of a language.
+[Packagist](https://packagist.org/) is (as far as I know) run by a private company (which does a great job, btw!) and not part of a committee or the PHP core team. The [recent crazy drama in the Ruby community](https://joel.drapper.me/p/rubygems-takeover/) made me think that we should all be careful about who controls the main package repository of a language.
 
-I guess this [blog post](https://blog.packagist.com/a-call-for-sustainable-open-source-infrastructure/) from the Packagist team is a step in the right direction, but I think we should aim for something more secure. I don't have the right solution in mind: the blog post talks very clearly about the funding problem and I guess committees usually struggle to find money. It's still something I think about from time to time.
+I guess this [blog post](https://blog.packagist.com/a-call-for-sustainable-open-source-infrastructure/) from the Packagist team is a step in the right direction, but it seems like we should aim for something safer. I don't have the right solution in mind: the blog post talks very clearly about the funding problem and I guess committees usually struggle to secure funding. It's still something worth considering.
 
 ## Get rid of extensions
 
-PHP is (to my knowledge) one of the very few languages where you need to install extensions apart from the language itself.
+PHP is one of the very few languages where you need to install extensions apart from the language itself.
 
 Curl, mbstring, mysql, sqlite, postgres... All these are essential for almost any PHP project, yet they need to be installed separately. And the installation process is really clunky! I always need to check the documentation to know where to find them, depending on the Linux distribution I'm using. I know that the PHP team is working on [PIE](https://github.com/php/pie) to solve this problem (and replace [PECL](https://pecl.php.net/)) but I don't think it's the right solution.
 
-I don't think people should have to deal with extensions at all. As in the Python ecosystem, I think it should be possible to install compiled binaries as any other PHP package. In Python you don't have extensions: you just install a package (through pip or uv) and this one can include compiled code from other languages.
+People should not have to deal with extensions at all. As in the Python ecosystem, it should be possible to install compiled binaries as any other PHP package. In Python you don't have extensions: you just install a package (through pip or uv) and this one can include compiled code from other languages.
 
 This command:
 
@@ -57,9 +59,9 @@ pip install pydantic
 
 ...installs the Pydantic package, which is written in Python but also includes some parts written in Rust for performance reasons. The user doesn't need to care about this: they just install the package and use it. Same goes for [psycopg2](https://www.psycopg.org) which includes [C code](https://www.psycopg.org/features/).
 
-The process of installing PHP extensions is so unnessesarily complicated that [BeyondCode](https://beyondco.de/) made [a tool](https://php.new/) to install PHP with major extensions (and composer). The fact that I have 10+ years of experience with PHP and I still find this process annoying should tell something about how it could be improved.
+The process of installing PHP extensions is so complicated that [BeyondCode](https://beyondco.de/) made [a tool](https://php.new/) to install PHP with major extensions (and composer). The fact that I have 10+ years of experience with PHP and I still find this process annoying should tell us something about how it could be improved.
 
-I would love to be able to just run:
+I'd love to be able to just run:
 
 ```bash
 composer require foo/my-package
@@ -69,11 +71,13 @@ And not worry about it.
 
 Adding compiled code to a package (and getting rid of extensions) would be my final dream, but maybe automatically installing extensions required by the package would be a good first step.
 
+Seems like [FrankenPHP](https://frankenphp.dev/) includes most extensions by default. It's a great start!
+
 ## Sets
 
 The standard library is probably the most frustrating thing for me when I work with PHP. It's getting better over the years, but I still lack so many useful things.
 
-I would love for example to have Set objets in the stdlib. There is a [Ds extension](https://www.php.net/manual/en/book.ds.php) which provides a Set class, but I never saw it used in the wild. People rely on `array_unique()` or Laravel's `Collection` class for this.
+I would love to have Set objects in the stdlib. There is a [Ds extension](https://www.php.net/manual/en/book.ds.php) which provides a Set class, but I've never seen it used in the wild. People rely on `array_unique()` or Laravel's `Collection` class for this.
 
 Python has [native sets](https://docs.python.org/3/library/stdtypes.html#set-types-set-frozenset), and it also allows using nice pieces of syntax:
 
@@ -144,15 +148,15 @@ amount_2 = Money(1332, 'EUR')
 amount_1 + amount_2 # Money(3672, 'EUR')
 ```
 
-We can obviously manually define an `add` method in PHP, but being able to use the `+` operator would make the code much cleaner.
+We can of course manually define an `add` method in PHP, but being able to use the `+` operator would make the code much cleaner.
 
 ## Avoid useless complexity
 
 _This part is probably the most controversial._
 
-One thing that I really disliked in the recent years is the increasing complexity of the language for features that (in my humble opinion) don't really add that much value.
+One thing that I really disliked in recent years is the increasing complexity of the language for features that (in my humble opinion) don't really add that much value.
 
-I'm more and more concerned with the visual debt. I know, I know. When [this video from Laracasts](https://laracasts.com/series/php-bits/episodes/1) came out (it's private now), I was really upset and laughing. I was definitely in the team of Ocramius and his [troll article](https://ocramius.github.io/blog/eliminating-visual-debt/).
+I'm increasingly concerned about visual debt. I know, I know. When [this video from Laracasts](https://laracasts.com/series/php-bits/episodes/1) came out (it's private now), I was really upset and laughed. I was definitely in the team of Ocramius and his [troll article](https://ocramius.github.io/blog/eliminating-visual-debt/).
 
 Today? Honestly, I'm not that sure anymore.
 
@@ -172,9 +176,9 @@ final readonly class MyClass
 
 _We should also have a way to declare strict types globally, but that's another topic, and Brent already mentioned some ideas to fix it in [this article](https://stitcher.io/blog/game-changing-editions)._
 
-I don't mind having my classes not final, to be honest. If you want to create a monster through inheritance, go ahead. I don't think I should add a keyword on all my classes to prevent this.
+I don't mind leaving my classes non-final, to be honest. If you want to create a monster through inheritance, go ahead. I'm not convinced I should add a keyword on all my classes to prevent this.
 
-`readonly` could be useful in some cases but I'm not sure every class should be readonly, especially when it's a service having a dependency injected through the constructor. I don't know anyone who would want to change this dependency later and which bug it would prevent.
+`readonly` could be useful in some cases but I'm not sure every class should be readonly, especially when it's a service having a dependency injected through the constructor. I don't know anyone who would want to change this dependency later, nor what bug this would prevent.
 
 These are mostly about how PHP devs write code and not the language itself, I agree.
 
@@ -214,7 +218,7 @@ $result = (new Foo())->bar();
 var_dump($result); // null
 ```
 
-Absolute same result.
+Exactly the same result.
 
 The worst part for me is the opposite case:
 
@@ -225,23 +229,21 @@ class Foo
 {
     public function bar(): ?string
     {
-        if (false) {
+        if (someCondition()) {
             // A method with return type
             // must return a value (did you mean
             // "return null;" instead of "return;"?)
             return;
         }
 
-        if (true) {
-            return "baz";
-        }
+        return "baz";
     }
 }
 ```
 
-I don't think this has ever saved a bug anywhere in the world. I'm actually even 100% sure. It just makes me say "oh shit" every time I forget to add `null` in an early return.
+I don’t think this has ever prevented a bug in practice. I'm actually 100% sure. It just makes me say "oh shit" every time I forget to add `null` in an early return.
 
-The point has been discussed in the [RFC](https://wiki.php.net/rfc/void_return_type#why_isn_t_return_nullpermitted). I still hardly disagree. Sometimes things make sense conceptually but not practically.
+The point has been discussed in the [RFC](https://wiki.php.net/rfc/void_return_type#why_isn_t_return_nullpermitted). I still strongly disagree. Sometimes things make sense conceptually but not practically.
 
 My point is (and it's very personal): I would love for PHP to avoid complexity where it's not needed.
 
@@ -257,7 +259,7 @@ It's frustrating not to be able to define short functions that span multiple lin
 $a = 5;
 
 $sum = fn($b) => {
-    $result = $a + b;
+    $result = $a + $b;
 
     return $result;
 };
@@ -279,7 +281,7 @@ $sum = function($b) use ($a) {
 
 ### Partials
 
-The [RFC about Partial Function Application](https://wiki.php.net/rfc/partial_function_application_v2) has been accepted and I think it's a great addition to the language.
+The [RFC about Partial Function Application](https://wiki.php.net/rfc/partial_function_application_v2) has been accepted and to me it sounds like a great addition to the language.
 
 I don't know why, but I have always been fascinated by partials. Weird kink, I guess.
 
@@ -293,9 +295,9 @@ I have a lot of hope for the [Context Managers RFC](https://wiki.php.net/rfc/con
 
 We all know that PHP 6 never came out because of the ambitious plan to add native Unicode support to the language. I doubt the PHP core team will ever try to do this again, but I would love to have first-class Unicode strings in PHP. It's such a breeze not to think about it when coding in Python.
 
-I always have to double-check if a function supports Unicode strings or not in PHP. It's also a thing I usually mention in my code reviews because many PHP developers don't think about `mb_` fuctions.
+I always have to double-check if a function supports Unicode strings or not in PHP. It's also a thing I usually mention in my code reviews because many PHP developers forget about `mb_` functions.
 
-Will probably never happen but you can't forbid me to dream.
+It will probably never happen but you can't forbid me from dreaming.
 
 ### Lists and Dictionaries
 
@@ -344,13 +346,15 @@ $arrUnique = array_unique($arr)
 json_encode($arrUnique)
 ```
 
-Recently, a colleague who worked on the frontend said to me: "Can someone tell PHP that dictionaries and lists are different things?".
+Recently, a colleague on the frontend said to me: "Can someone tell PHP that dictionaries and lists are different things?".
 
-Couldn't agree more.
+I couldn't agree more.
+
+Having two different types for lists (indexed arrays) and dictionaries (associative arrays) would make the code much safer and prevent so many bugs.
 
 ### Comprehensions
 
-Python has list and dictionary comprehensions, which are a concise way to create lists and dictionaries. It allows to change the keys and values, but also to filter items very elegantly.
+Python has list and dictionary comprehensions, which are a concise way to create lists and dictionaries. It allows for changing the keys and values, but also to filter items very elegantly.
 
 To create a list of squares of numbers from 0 to 9:
 
@@ -398,10 +402,10 @@ If we add a filter, it's becoming even more verbose in PHP:
 $numbers = [0, 3, 3, 2, 1, 6];
 
 // [0, 4, 36]
-$squaresOfEvenNumbers = array_map(
+$squaresOfEvenNumbers = array_values(array_map(
     fn($number) => $number * $number,
     array_filter($numbers, fn($number) => $number % 2 === 0)
-);
+));
 ```
 
 Compare it to Python:
@@ -455,11 +459,11 @@ I don't think it will ever happen in PHP, because it's a pretty big syntax chang
 
 ### Managing PHP versions
 
-It seems to me that many PHP developers use Docker because managing multiple PHP versions on the same machine is almost impossible (extensions play a role too here). We usually set up a docker environment although we maybe just need php and a simple database.
+It seems to me that many PHP developers use Docker because managing multiple PHP versions on the same machine is almost impossible (extensions play a role too here). We usually set up a Docker environment even though we might only need PHP and a simple database.
 
 I already tried [phpenv](https://github.com/phpenv/phpenv) but was not convinced.
 
-Python has been able for years to manage multiple versions of the language on the same machine through [pyenv](https://github.com/pyenv/pyenv). Since [uv](https://docs.astral.sh/uv/) it's now so easy, it's insane. This is probably because uv is written in a different language (Rust) which makes it easier to manage multiple versions of Python without breaking anything. I don't know.
+Python has been able for years to manage multiple versions of the language on the same machine through [pyenv](https://github.com/pyenv/pyenv). Since [uv](https://docs.astral.sh/uv/) it's now so easy, it's insane. This is probably because uv is written in a different language (Rust) which makes it easier to manage multiple versions of Python without breaking anything.
 
 Still, being able to easily switch between multiple PHP versions on the same machine would be a game-changer for many developers.
 
