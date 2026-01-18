@@ -3,9 +3,9 @@ import HeaderElement from './header-element.astro'
 
 const elements = [
     { text: 'Blog', path: '/' },
-    { text: 'Book', path: '/book' },
-    { text: 'About', path: '/about' },
-    { text: 'Search', path: '/search' },
+    { text: 'From PHP to Python', path: 'https://fromphptopython.com', external: true },
+    { text: 'About', path: '/about/' },
+    { text: 'Search', path: '/search/' },
 ]
 
 ---
@@ -15,7 +15,7 @@ const elements = [
     <div class="text-right md:my-12 xl:my-16 mb-4 mt-10 text-xl md:text-2xl font-mono">Einenlum<span class="text-pink-700 font-bold">.</span></div>
     <nav class="my-6 md:my-12 md:pr-0 pr-2">
         <ul class="flex justify-end">
-            {elements.map((element) => <HeaderElement text={element.text} path={element.path} />)}
+            {elements.map((element) => <HeaderElement text={element.text} path={element.path} external={!!element.external} />)}
         </ul>
     </nav>
 </header>

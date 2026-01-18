@@ -6,12 +6,14 @@ const currentPath = new URL(Astro.request.url).pathname;
 
 interface Props {
     path: string,
-    text: string
+    text: string,
+    external?: boolean
 }
 
 const {path, text} = Astro.props as Props;
 const isActive = path === currentPath;
+const isExternal = Astro.props.external ?? false;
 
 ---
 
-{isActive ? <HeaderActiveElement text={text} /> : <HeaderInactiveElement text={text} path={path} />}
+{isActive ? <HeaderActiveElement text={text} /> : <HeaderInactiveElement text={text} path={path} external={isExternal} />}
