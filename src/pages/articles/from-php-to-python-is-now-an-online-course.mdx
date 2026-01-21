@@ -1,0 +1,78 @@
+import ArticleLayout from '../../layouts/article-layout.astro';
+import { components as MarkdownComponents } from '../../components/markdown-components.astro';
+import NonSourcedImage from '../../components/non-sourced-image.astro';
+
+export const components = MarkdownComponents;
+
+export const publishedAt = new Date(2026, 0, 21);
+export const title = 'From PHP to Python - v2 is out! 🐘🐍';
+export const description = 'My book has evolved into an online course.';
+
+<ArticleLayout title={title} description={description} publishedAt={publishedAt}>
+
+Almost three years ago, I [announced](/articles/my-book-from-php-to-python-is-out/) the release of my book _From PHP to Python_. It was the end of a long journey: it took me two years to write it, and I put a lot of effort into it.
+
+**Today, I'm excited to announce that the book has evolved into a full updated online course. Version 2 is out!**
+
+<a href="https://fromphptopython.com" target="_blank">
+<NonSourcedImage
+  src="https://fromphptopython-images.fra1.cdn.digitaloceanspaces.com/meta/og_image.png"
+  alt="From PHP to Python - Online Course"
+></NonSourcedImage>
+</a>
+
+## Why an online course?
+
+The book format worked well, but I got feedback from readers who saw some limitations:
+
+- **Not so mobile friendly**: reading a PDF on a phone isn't ideal. I managed to create an ePub version, but this format is still very hard to make right. Some readers struggled with it depending on the device they used.
+- **Hard to search**: while PDFs have a search function, it's not as smooth as searching through a website with a proper search engine. 
+- **Hard to copy and paste**: sometimes readers wanted to copy code snippets or sections of text, but PDF formatting could get in the way.
+
+I also didn't feel as free as I could be with a static book. Fixing mistakes or typos here and there would require uploading new PDF/ePub versions and ask my readers to download them.
+
+It's now mobile friendly, searchable, easy to copy and paste from, and I can push updates instantly. Also, my readers can send me feedback directly through the platform, making it easier to improve the content over time.
+
+Users can also choose their own syntax highlighting theme for both languages.
+
+The core philosophy remains the same: **take your existing PHP knowledge and map it directly to Python.** I don't want you to waste time on things that are obvious. We focus on the differences and similarities between the two languages.
+
+## What's covered?
+
+The course covers everything from syntax basics to advanced topics:
+
+- Core concepts
+- Python-specific features: decorators, context managers, comprehensions
+- Practical skills: testing, linting, logging, building a CLI app
+- Packaging: the course now promotes [uv](https://docs.astral.sh/uv/) to install dependencies and publish packages to PyPI
+- Database interaction
+- Concurrency (threading, multiprocessing, async)
+- A bit of Python culture
+
+All of this with **side-by-side PHP and Python code comparisons**.
+
+The course now covers **PHP 8.5** and **Python 3.14**.
+
+All future updates to the course will be free for existing students. If a new update is released, you'll get notified by email and will get a changelog.
+
+## What about the book buyers?
+
+If you bought the book on Gumroad, **you get free access to the course**. I sent an email to all previous customers with the changelog. Just log in with the same email you used to buy the book, and you'll get free premium access to the course (and to its future updates). You can even read the first version directly from the website.
+
+## Pricing
+
+**The first 7 chapters are available for free to everyone.**
+
+The full course is available for a one-time payment of **$39** (launch price, normally $79). No subscription. You get access to all current content and all future updates.
+
+There's also a 30-day money-back guarantee. If it's not for you, just let me know.
+
+Don't hesitate to send me feedback directly through the course platform or via [email](mailto:hello@fromphptopython.com).
+
+**Check it out at [fromphptopython.com](https://fromphptopython.com).**
+
+I'm absolutely convinced this is the fastest way ever to learn Python if you already know PHP.
+
+Hope you'll enjoy it and find it useful! ❤️
+
+</ArticleLayout>
