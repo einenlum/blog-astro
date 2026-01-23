@@ -1,0 +1,156 @@
+import ArticleLayout from '../../layouts/article-layout.astro';
+import { components as MarkdownComponents } from '../../components/markdown-components.astro';
+export const components = MarkdownComponents;
+
+import NonSourcedImage from '../../components/non-sourced-image.astro';
+export const publishedAt = new Date(2026, 0, 23);
+export const description =
+  'When you\'re using libs like DaisyUI, you don\'t want to hardcode Tailwind color names in your codebase. I built a tool for this.';
+export const title =
+  'Tailwind Alchemist: find all tailwind colors in your codebase';
+
+<ArticleLayout title={title} description={description} publishedAt={publishedAt}>
+
+I love Tailwind. For a long time, I was afraid of CSS and almost didn't want to understand it. Tailwind made me feel like it's not such a big deal after all.
+
+Some people say that they lost their CSS knowledge because of Tailwind, but for me it's the opposite. I'm now curious about it and it feels great!
+
+At some point though, I realized something was quite annoying. When using Tailwind, you put the color (or bg color) directly on the element, which is great to understand quickly how the component looks like, but if you decide to change the theme later, you have to go through all your codebase and change the color names one by one.
+
+I tried to create a design system to avoid this, but I was not that great at finding names and it always ended up in a big mess.
+
+I later discovered [DaisyUI](https://daisyui.com/), which provides a theme system on top of Tailwind. Instead of using color names like `bg-blue-500`, you can use semantic names like `bg-primary` and then define what `primary` means in your theme.
+
+Changing the theme is then super easy, you just change the color values in your theme definition.
+
+There's one problem though: when you start with some templates (like [Flux UI](https://fluxui.dev/) or [Shadcn](https://ui.shadcn.com/) which are used by the Laravel starter kits), you have a lot of hardcoded Tailwind color names in your codebase. Adding DaisyUI later means you have to go through all your codebase and replace the color names with semantic names.
+
+I could not find a simple tool to do this, so I built one: [Tailwind Alchemist](https://github.com/einenlum/tailwind-alchemist).
+
+<div class="my-10 max-w-48 text-center mx-auto">
+    <a href="https://github.com/einenlum/tailwind-alchemist">
+        <img class="mx-auto" src="https://res.cloudinary.com/dybam16gk/image/upload/v1769171545/blog_images/tailwind-alchemist-logo_rosnk0.png" alt="Tailwind Alchemist logo" width="800" height="400" />
+    </a>
+</div>
+
+It's made in Typescript and works as a CLI tool. You just give it the path to your codebase, and it finds all default Tailwind color names that are still present in your files.
+
+Here is how you can use it:
+
+```bash
+$ npx tw-alchemist scan -p 'resources/js/**'      
+
+Found 28 Tailwind colors:
+
+amber-400
+black
+blue-100
+blue-200
+blue-700
+blue-800
+green-500
+green-600
+neutral-100
+neutral-200
+neutral-300
+neutral-400
+neutral-500
+neutral-600
+neutral-700
+neutral-800
+neutral-900
+orange-300
+red-100
+red-200
+red-50
+red-500
+red-600
+red-700
+violet-500
+white
+yellow-500
+zinc-900
+```
+
+If you want to know which files contain which colors, you can add the `-v` flag:
+
+```bash
+$ npx tw-alchemist scan -p 'resources/js/**' -v
+
+Found 28 Tailwind colors:
+
+Color: violet-500 (found in 3 files)
+  - resources/js/components/AppHeader.vue
+  - resources/js/components/AppLogo.vue
+  - resources/js/components/MobileHeader.vue
+
+Color: neutral-500 (found in 5 files)
+  - resources/js/components/AppHeader.vue
+  - resources/js/components/AppearanceTabs.vue
+  - resources/js/components/TextLink.vue
+  - resources/js/pages/auth/TwoFactorChallenge.vue
+  - resources/js/pages/settings/Profile.vue
+
+Color: neutral-100 (found in 3 files)
+  - resources/js/components/AppearanceTabs.vue
+  - resources/js/components/NavFooter.vue
+  - resources/js/components/PlaceholderPattern.vue
+
+Color: neutral-800 (found in 2 files)
+  - resources/js/components/AppearanceTabs.vue
+  - resources/js/components/NavFooter.vue
+
+...
+```
+
+If you want to know which lines (and which class utilities) contain the colors, you can use extra verbosity with the `-vv` flag:
+
+```bash
+$ npx tw-alchemist scan -p 'resources/js/**' -vv
+
+Found 28 Tailwind colors:
+
+Color: violet-500 (3 occurrences)
+  - resources/js/components/AppHeader.vue
+    - Line 106: text-violet-500
+  - resources/js/components/AppLogo.vue
+    - Line 10: text-violet-500
+  - resources/js/components/MobileHeader.vue
+    - Line 28: text-violet-500
+
+Color: neutral-500 (6 occurrences)
+  - resources/js/components/AppHeader.vue
+    - Line 233: text-neutral-500
+  - resources/js/components/AppearanceTabs.vue
+    - Line 33: text-neutral-500
+  - resources/js/components/TextLink.vue
+    - Line 21: dark:decoration-neutral-500
+  - resources/js/pages/auth/TwoFactorChallenge.vue
+    - Line 100: dark:decoration-neutral-500
+    - Line 132: dark:decoration-neutral-500
+  - resources/js/pages/settings/Profile.vue
+    - Line 244: dark:decoration-neutral-500
+
+Color: neutral-100 (4 occurrences)
+  - resources/js/components/AppearanceTabs.vue
+    - Line 23: bg-neutral-100
+    - Line 32: dark:text-neutral-100
+  - resources/js/components/NavFooter.vue
+    - Line 28: dark:hover:text-neutral-100
+  - resources/js/components/PlaceholderPattern.vue
+    - Line 11: dark:stroke-neutral-100
+
+Color: neutral-800 (2 occurrences)
+  - resources/js/components/AppearanceTabs.vue
+    - Line 23: dark:bg-neutral-800
+  - resources/js/components/NavFooter.vue
+    - Line 28: hover:text-neutral-800
+
+...
+```
+
+It only supports Tailwind v4. It's also on [Context7](https://context7.com/) so you can ask your LLM (with the right MPC) to use it when refactoring your codebase.
+
+I hope it can be useful to you. If you like it, feel free to give it a star [on GitHub](https://github.com/einenlum/tailwind-alchemist) ⭐️
+
+</ArticleLayout>
