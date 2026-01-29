@@ -1,0 +1,77 @@
+import ArticleLayout from '../../layouts/article-layout.astro';
+import { components as MarkdownComponents } from '../../components/markdown-components.astro';
+export const components = MarkdownComponents;
+
+import InsertBox from '../../components/insert-box.astro';
+import NonSourcedImage from '../../components/non-sourced-image.astro';
+export const publishedAt = new Date(2026, 0, 29);
+export const description = 'A developer\'s worst nightmare: a tool that silently corrupts your Git history';
+export const title =
+  'Git Shitstorm: How to Make Any Developer Lose Their Mind';
+
+<ArticleLayout title={title} description={description} publishedAt={publishedAt}>
+
+Ten years ago, when I was working for an agency, I had the unluckiest colleague I had ever met. He ran into bugs from another world. Things that no one could explain. As a joke, I started thinking: "What if I could provoke this kind of bad luck on purpose?" That’s how the idea of “Git Shitstorm” was born.
+
+I had a working prototype in Node.js, but it was not practical (the implementation was stupid and Node.js was not the best fit for this tool).
+
+A few days ago, I thought about this idea again and decided to give it a proper implementation in Go.
+
+<InsertBox>
+  <strong>Warning:</strong> This tool is intended for educational and entertainment purposes only. Please do not use it on someone else's repository without their explicit permission.
+</InsertBox>
+
+Here’s the idea: what if, when a coworker was AFK, you could download a binary in a few seconds and change their git alias to a malicious one (`alias git='git-shitstorm && git'`)?
+
+<a href="https://github.com/einenlum/git-shitstorm" target="_blank" rel="noopener noreferrer">
+    <NonSourcedImage src="https://res.cloudinary.com/dybam16gk/image/upload/v1769680906/blog_images/git-shitstorm_ov883n.png" alt="Git Shitstorm logo" />
+</a>
+
+No root access needed. A single binary to download and an edit to the `.bashrc` or `.zshrc` file.
+
+## What does it do?
+
+The tool acts like Russian roulette. By default (configurable), it does nothing 90% of the time. But 10% of the time, it will execute the following actions:
+
+- Gets a random branch in the repository
+- Gets a random file from this branch
+- Takes random lines from that file
+- Takes a random commit from the same branch
+
+Once all of this is selected, the tool then:
+
+- Takes another random branch (except the one the user is working on)
+- Takes another random file from this branch (preferably with the same extension as the base file)
+- Inserts the lines taken from the first file into this new file at a random position
+- Commits the changes with the commit message and author from the first branch
+
+Done.
+
+This means that once in a while, some changes will appear in the git history, making the developer wonder where they came from. The changes are not completely random: it's code that exists in the repository, from the same type of file, and committed by a real author.
+
+Debugging this kind of issue is an absolute nightmare.
+
+Even worse: since `git` has been aliased to `git-shitstorm && git`, every time the developer uses git to debug the problem, they risk making things worse by introducing new random changes.
+
+And let’s be honest: in this situation, who would think to check whether their git command has been tampered with? I mean, git appears to work fine, right?
+
+
+## Performance
+
+My latest implementation in Go is pretty fast.
+
+| Repository example                                        | Added latency  |
+| ------------------                                        | -------------- |
+| [laravel/boost](https://github.com/laravel/boost) (small) | ~15ms          |
+| [htmx](https://github.com/bigskysoftware/htmx) (medium)   | ~20ms          |
+| [django](https://github.com/django/django) (huge)         | ~80ms          |
+
+This means most people will never notice the extra latency added to their git commands.
+
+**Again, this tool is just for fun and educational purposes**. Don't use it to harass your coworkers! I'm not responsible for your future unemployment.
+
+Fun fact: while I was testing the tool, I ended up being git-shitstormed myself on this very repository. I guess sometimes you get a taste of your own medicine!
+
+Link to the repo: <a href="https://github.com/einenlum/git-shitstorm" target="_blank" rel="noopener noreferrer">https://github.com/einenlum/git-shitstorm</a>
+
+</ArticleLayout>
