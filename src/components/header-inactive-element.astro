@@ -2,19 +2,26 @@
 export interface Props {
     text: string,
     path: string,
-    external?: boolean
+    external?: boolean,
+    icon?: string
 }
 
-const { text, path } = Astro.props as Props;
+const { text, path, icon } = Astro.props as Props;
 const isExternal = Astro.props.external ?? false;
 
 ---
 
-<div class="list-none mx-1.5 md:mx-6 last:mr-0 border-b-2 pb-1 border-dotted border-gray-200 dark:border-gray-600 text-base md:text-lg">
-    <a href={path} class="transition ease-in-out delay-150 hover:text-pink-700 hover:dark:text-pink-600" target={isExternal ? "_blank" : "_self"}>
-        {text}
+<div class="list-none mx-1.5 md:mx-6 last:mr-0 text-base md:text-lg">
+    <a href={path} class="text-pink-700 dark:text-pink-400 saturate-70 transition ease-in-out delay-150 hover:saturate-100 hover:dark:text-pink-600" target={isExternal ? "_blank" : "_self"}>
+        { icon === 'search' ? <>
+            <svg xmlns="http://www.w3.org/2000/svg" class="inline w-4 h-4 md:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <span class="hidden md:inline">{text}</span>
+            </> : text
+        }
 
-        { isExternal ? 
+        { isExternal ?
             <svg xmlns="http://www.w3.org/2000/svg" class="inline w-4 h-4 ml-1 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
             </svg>
