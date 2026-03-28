@@ -1,11 +1,12 @@
 ---
 import HeaderElement from './header-element.astro'
 
+const base = import.meta.env.BASE_URL;
 const elements = [
-    { text: 'Blog', path: '/' },
+    { text: 'Blog', path: base },
     { text: 'From PHP to Python', path: 'https://fromphptopython.com', external: true },
-    { text: 'About', path: '/about/' },
-    { text: 'Search', path: '/search/', icon: 'search' },
+    { text: 'About', path: `${base}about/` },
+    { text: 'Search', path: `${base}search/`, icon: 'search' },
 ]
 
 ---
