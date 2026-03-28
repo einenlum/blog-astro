@@ -22,7 +22,6 @@ export default defineConfig({
       wrap: true,
     },
   },
-  site: 'https://einenlum.github.io',
-  base: '/blog-astro',
+  site: 'https://www.einenlum.com',
   trailingSlash: 'always',
 });
